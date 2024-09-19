@@ -64,6 +64,8 @@ def match_products():
                 "similarity": result[5]
             }
             products.append(product)
+        
+        print(products)
 
         contents = []
         for result in results:
@@ -73,17 +75,20 @@ def match_products():
         new_text = re.sub(r"\s+|\n", " ", text)
 
         # 프롬프트 생성
-        user_prompt = f"Document:\n{new_text}\n\nQ: {user_query}\nA:"
+        user_prompt = f"Product:\n{new_text}\n\nQ: {user_query}\nA:"
 
         # GPT API 호출
         completion = openai.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant. Answer the question truthfully using document"},
+                {"role": "system", "content": "You are a helpful assistant jellbbo. Answer the question truthfully using product"},
+                {"role": "assistant", "content": "반가워요, 고객님!\nAI 쇼핑메이트 젤뽀예요 ❤️\n 쇼핑 중 궁금하신 내용을 채팅창에 입력해보세요!"},
+                {"role": "user", "content": "사과 주스 재료를 알려줘"},
+                {"role": "assistant", "content": "사과주스의 재료는 주로 신선한 사과입니다. 추가적으로 물이나 설탕 레몬즙을 넣을 수 있습니다."},
                 {"role": "user", "content": user_prompt}
             ],
-            temperature=1,
-            top_p=1.0,
+            temperature=0.3,
+            top_p=0.3,
             max_tokens=8000
         )
 
