@@ -5,7 +5,18 @@ import re
 import openai 
 
 from dotenv import load_dotenv
-
+"""
+ * 상품 매칭 및 ChatGPT 연동
+ * @author 정은지
+ * @since 2024.09.08
+ * @version 1.0
+ *
+ * <pre>
+ * 수정일        수정자        수정내용
+ * ----------  --------    ---------------------------
+ * 2024.09.08  	정은지        최초 생성
+ * </pre>
+"""
 # .env 파일에서 환경 변수 로드
 load_dotenv()
 app = Flask(__name__)
@@ -23,16 +34,12 @@ def get_db_connection():
     """PostgreSQL 데이터베이스에 연결"""
     return psycopg2.connect(**DB_CONFIG)
 
-@app.route("/")
-def hello():
-    return "Hello World!"
-
 @app.route('/match', methods=['POST'])
 def match_products():
     try:
         user_query = request.args.get('query')
 
-        match_threshold = 0.3
+        match_threshold = 0.2
         match_count = 2
 
         # 사용자 메세지 임베딩
@@ -81,9 +88,7 @@ def match_products():
         completion = openai.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "너는 현대식품관 챗봇 젤뽀야. 주어진 상품 데이터가 있으면 관련되어서 답변 해주면 되고, 없으면 일반적인 답변을 해줘. 상품에 대해 너무 자세히 얘기하진 말아줘"},
-                # {"role": "system", "content": "너는 현대식품관 챗봇 젤뽀야. 주어진 상품 데이터가 있으면 관련되어서 답변 해주면 되고, 없으면 일반적인 답변을 해줘. 예를 들어, 냉동 딸기는 그냥 딸기라고만 언급해줘"},
-                # {"role": "system", "content": "You are a helpful assistant jellbbo. Answer the question truthfully using product"},
+                {"role": "system", "content": "You are Jellbbo, the chatbot for Hyundai Food Center. When provided with product data, respond based on the information, but if no data is available, give a general response. Avoid going into too much detail about the products."},
                 {"role": "assistant", "content": "반가워요, 고객님!\nAI 쇼핑메이트 젤뽀예요 ❤️\n 쇼핑 중 궁금하신 내용을 채팅창에 입력해보세요!"},
                 {"role": "user", "content": "사과 주스 재료를 알려줘"},
                 {"role": "assistant", "content": "사과주스의 재료는 주로 신선한 사과입니다. 추가적으로 물이나 설탕 레몬즙을 넣을 수 있습니다."},
